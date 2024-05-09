@@ -31,7 +31,11 @@ public class playerMovement : MonoBehaviour
     [Space]
 
     public GameObject enemy;
+    [SerializeField] bool isGrounded;
 
+    [SerializeField] private Transform wallCheck;
+
+    [SerializeField] bool isWalled;
 
 
     private void Start()
@@ -45,7 +49,7 @@ public class playerMovement : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if(Input.GetButtonDown("Jump") && IsGrounded())
+        if(Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
         }
@@ -56,9 +60,26 @@ public class playerMovement : MonoBehaviour
         }
 
 
+
+
+
+        if (Input.GetButtonDown("Jump") && isWalled)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+        }
+
+        
+
+
+
+
         if (horizontal != 0)
         {
             anim.SetTrigger("Run");
+        }
+        else if(horizontal == 0)
+        {
+            anim.SetTrigger("StopRun");
         }
 
 
@@ -79,6 +100,67 @@ public class playerMovement : MonoBehaviour
     {
 
         Walk();
+        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.transform.position, -Vector2.up);
+        Debug.DrawRay(groundCheck.transform.position, -Vector2.up * hitGround.distance, Color.red);
+        if(hitGround.collider != null)
+        {
+            if (hitGround.distance <= 0.2f)
+            {
+                isGrounded = true;
+            }
+            else
+            {
+                isGrounded = false;
+            }
+        }
+        if (isFacingRight)
+        {
+            RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.transform.position, Vector2.left);
+            Debug.DrawRay(wallCheck.transform.position, Vector2.left * hitWall.distance, Color.cyan);
+            if (hitWall.collider != null)
+            {
+                if (hitWall.distance <= 0.2f)
+                {
+                    isWalled = true;
+                    
+                }
+                else
+                {
+                    
+                    isWalled = false;
+                }
+            }
+            else
+            {
+                isWalled = false;
+            }
+        }
+        else if (!isFacingRight)
+        {
+            RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.transform.position, Vector2.right);
+            Debug.DrawRay(wallCheck.transform.position, Vector2.right * hitWall.distance, Color.cyan);
+            if (hitWall.collider != null)
+            {
+                if (hitWall.distance <= 0.2f)
+                {
+                    
+                    isWalled = true;
+                }
+                else
+                {
+                   
+
+                     isWalled = false;
+                }
+
+                
+            }
+            else
+            {
+                isWalled = false;
+            }
+        }
+        
     }
 
 
@@ -100,10 +182,10 @@ public class playerMovement : MonoBehaviour
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, enemyLayer);
     }
-    private bool IsGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-    }
+    //private bool IsGrounded()
+   // {
+    //    return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+   // }
     private void Walk()
     {
         rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);

@@ -7,6 +7,7 @@ public class HealthSystem : MonoBehaviour
 
     public Slider healthBar;
     public float damage = 1f;
+   
 
 
     // Update is called once per frame
@@ -20,6 +21,7 @@ public class HealthSystem : MonoBehaviour
 
         if(collision.gameObject.tag == "Enemy")
         {
+
             healthBar.value -= damage;
         }
         

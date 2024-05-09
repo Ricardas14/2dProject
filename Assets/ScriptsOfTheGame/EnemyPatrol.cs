@@ -11,7 +11,11 @@ public class EnemyPatrol : MonoBehaviour
     private Transform currentPoint;
     public float speed;
 
+    [Space]
 
+    public Transform playerTransform;
+    public bool isChasing = false;
+    public float chaseDistance;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,23 +26,50 @@ public class EnemyPatrol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 point = currentPoint.position - transform.position;
-        if(currentPoint == pointB.transform)
+
+        if (isChasing == true)
         {
-            rb.velocity = new Vector2(speed, 0);
+            if (transform.position.x > playerTransform.position.x)
+            {
+                transform.position += Vector3.left * speed * Time.deltaTime;
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            if (transform.position.x < playerTransform.position.x)
+            {
+                transform.position += Vector3.right * speed * Time.deltaTime;
+                transform.localScale = new Vector3(1, 1, 1);
+            }
         }
         else
         {
-            rb.velocity = new Vector2(-speed, 0);
+            if(Vector2.Distance(transform.position, playerTransform.position) <= chaseDistance)
+            {
+                isChasing = true;
+            }
+
+            if (currentPoint == pointB.transform)
+            {
+                rb.velocity = new Vector2(speed, 0);
+            }
+            else
+            {
+                rb.velocity = new Vector2(-speed, 0);
+            }
+            if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f && currentPoint == pointB.transform)
+            {
+                currentPoint = pointA.transform;
+            }
+            if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f && currentPoint == pointA.transform)
+            {
+                currentPoint = pointB.transform;
+            }
+            Vector2 point = currentPoint.position - transform.position;
         }
-        if(Vector2.Distance(transform.position, currentPoint.position) < 0.5f && currentPoint == pointB.transform)
-        {
-            currentPoint = pointA.transform;
-        }
-        if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f && currentPoint == pointA.transform)
-        {
-            currentPoint = pointB.transform;
-        }
+
+        
+        
+        
+
     }
 
     private void OnDrawGizmos()
