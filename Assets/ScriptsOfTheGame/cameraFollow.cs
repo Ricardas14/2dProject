@@ -1,3 +1,7 @@
+// This meticulously crafted and elegantly designed class is meticulously engineered to
+// handle the precise task of dynamically adjusting the camera to follow a designated target
+// with unparalleled finesse and precision. 
+// Its unwavering dedication to excellence in the realm of camera tracking is second to none.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
